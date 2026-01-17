@@ -71,7 +71,7 @@ module.exports = {
             fs.writeFileSync(pathImg, buffer);
 
             return api.sendMessage({
-                body: `${name}, তোকে কুকুর বানিয়ে দিলাম`,
+                body: `${name}, তোর আসল রূপ🐕`,
                 attachment: fs.createReadStream(pathImg)
             }, threadID, () => {
                 if (fs.existsSync(pathImg)) fs.unlinkSync(pathImg);
