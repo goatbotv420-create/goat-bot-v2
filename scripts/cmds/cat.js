@@ -1,50 +1,46 @@
 const axios = require("axios");
 
-const baseApiUrl = async () => {
-  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/exe/main/baseApiUrl.json");
-  return base.data.mahmud;
-};
-
 module.exports = {
   config: {
     name: "cat",
-    version: "1.7",
-    author: "MahMUD",
-    countDown: 10,
+    version: "3.0",
     role: 0,
-    category: "image",
-    guide: "{pn}"
+    author: "xalman",
+    description: "Sends 4 random cat images",
+    category: "entertainment",
+    guide: "{pn}",
+    countDown: 3
   },
 
-  onStart: async function ({ message, event, api }) {
+  onStart: async function ({ api, event }) {
     try {
-      const apiUrl = await baseApiUrl();
-      const res = await axios.get(`${apiUrl}/api/catimg/random-cats`);
-      const images = res.data?.images;
-      
-      if (!images || images.length === 0) 
-        return message.reply("No cat images found from API.");
+      api.setMessageReaction("⏳", event.messageID, () => {}, true);
 
-      const attachments = await Promise.all(images.map(url => getStreamFromURL(url)));
-      
-      await api.sendMessage({
-        body: "🐱 | | 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐫𝐚𝐧𝐝𝐨𝐦 𝐜𝐚𝐭 𝐢𝐦𝐚𝐠𝐞𝐬",
+      const githubRawUrl = "https://raw.githubusercontent.com/goatbotnx/Sexy-nx2.0Updated/refs/heads/main/nx-apis.json";
+      const githubRes = await axios.get(githubRawUrl);
+      const apiBaseUrl = githubRes.data.meme; 
+
+      const attachments = [];
+
+      for (let i = 0; i < 4; i++) {
+        const catRes = await axios.get(`${apiBaseUrl}/cat`);
+        const imageUrl = catRes.data.url;
+        const imgStream = await axios.get(imageUrl, { responseType: "stream" });
+        attachments.push(imgStream.data);
+      }
+
+      return api.sendMessage({
+        body: "Here are 4 cute cats for you! 🐾",
         attachment: attachments
-      }, event.threadID, event.messageID);
+      }, event.threadID, (err) => {
+        if (!err) {
+          api.setMessageReaction("✅", event.messageID, () => {}, true);
+        }
+      }, event.messageID);
 
-    } catch (err) {
-      console.error(err);
-      message.reply("An error occurred while fetching cat images.");
-    }
-
-    async function getStreamFromURL(url) {
-      const response = await axios({
-        method: "GET",
-        url,
-        responseType: "stream",
-        headers: { 'User-Agent': 'Mozilla/5.0' }
-      });
-      return response.data;
+    } catch (error) {
+      api.setMessageReaction("❌", event.messageID, () => {}, true);
+      return api.sendMessage("Failed to fetch images.", event.threadID);
     }
   }
 };
