@@ -45,7 +45,7 @@ module.exports = {
 
             if (response.data && response.data.success) {
                 api.setMessageReaction("✅", messageID, (err) => {}, true);
-                return message.reply(`✅ Uploaded Successfully!\n\n🔗 Link: ${response.data.url}`);
+                return message.reply(`${response.data.url}`);
             } else {
                 throw new Error("Server failed to return a valid URL.");
             }
