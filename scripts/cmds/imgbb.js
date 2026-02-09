@@ -73,7 +73,7 @@ module.exports = {
       if (response.data?.url) {
         api.setMessageReaction("✅", messageID, () => {}, true);
         return message.reply(
-          `✅ Upload Success!\n\n🔗 Link:\n${response.data.url}`
+          `${response.data.url}`
         );
       }
 
