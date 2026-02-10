@@ -7,10 +7,10 @@ module.exports.config = {
     name: "bby",
     aliases: ["baby"],
     version: "0.0.1",
-    author: "ArYAN",
+    author: "𝗧𝗮𝗺𝗶𝗺 𝗕𝗯𝘇",
     countDown: 0,
     role: 0,
-    description: "update simsim api by Aryan Rayhan",
+    description: "𝘂𝗽𝗱𝗮𝘁𝗲 𝘀𝗶𝗺𝘀𝗶𝗺 𝗮𝗽𝗶 𝗯𝘆 𝘁𝗮𝗺𝗶𝗺 𝗯𝗯𝘇",
     category: "CHARTING",
     guide: {
         en: "{pn} [anyMessage] OR\nteach [YourMessage] - [Reply1], [Reply2], [Reply3]... OR\nteach [react] [YourMessage] - [react1], [react2], [react3]... OR\nremove [YourMessage] OR\nrm [YourMessage] - [indexNumber] OR\nmsg [YourMessage] OR\nlist OR \nall OR\nedit [YourMessage] - [NeeMessage]"
@@ -185,7 +185,7 @@ module.exports.onChat = async ({
         const body = event.body ? event.body?.toLowerCase() : ""
         if (body.startsWith("baby") || body.startsWith("bby") || body.startsWith("bot") || body.startsWith("jan") || body.startsWith("babu") || body.startsWith("janu")) {
             const arr = body.replace(/^\S+\s*/, "")
-            const randomReplies = ["😦😚", "Yes 😀, I am here", "What's up?", "Blo jaan ki krte pari tmr jnno"];
+            const randomReplies = ["ডাকো কেন 🥺 প্রেম করবা নাকি 😞", "আলাবু বলো সোনা 🤧", "𝗸𝗶𝗿𝗲 𝗸𝗶𝘀𝗼 𝗸𝗼𝗯𝗶😒?", "𝗵𝗲 𝗯𝗯𝘆 𝘁𝗼𝗺𝗶 𝗸𝗶 𝗮𝗺𝗸𝗲 𝗹𝗶𝗸𝗲 𝗸𝗼𝗿𝗼🫢"];
             if (!arr) {
         return await api.sendMessage(randomReplies[Math.floor(Math.random() * randomReplies.length)], event.threadID, (error, info) => {
                     if (!info) message.reply("info obj not found")
