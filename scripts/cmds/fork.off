@@ -2,7 +2,7 @@ module.exports = {
   config: {
     name: "fork",
     version: "1.4",
-    author: "xalman",
+    author: "𝗧𝗮𝗺𝗶𝗺 𝗕𝗯𝘇",
     countDown: 2,
     role: 0,
     shortDescription: "Show official fork link with owner info",
@@ -14,7 +14,7 @@ module.exports = {
 
   langs: {
     en: {
-      current: "╭───────『 🌐 』───────╮\n\n    OFFICIAL GITHUB FORK \n\n  🔗 Link: %1\n  👤 Owner: xalman\n\n╰───────『 ✨ 』───────╯"
+      current: "╭───────『 🌐 』───────╮\n\n    OFFICIAL GITHUB FORK \n\n  🔗 Link: %1\n  👤 Owner: 𝗧𝗮𝗺𝗶𝗺\n\n╰───────『 ✨ 』───────╯"
     }
   },
 
