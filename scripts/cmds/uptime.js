@@ -8,7 +8,7 @@ module.exports = {
     name: "uptime",
     version: "8.0.0",
     role: 0,
-    author: "xalman",
+    author: "𝗧𝗮𝗺𝗶𝗺 𝗕𝗯𝘇",
     description: "Premium Uptime for Goat Bot V2",
     category: "system",
     guide: "{pn}",
@@ -48,7 +48,7 @@ module.exports = {
 
     const msg = `
 ◢◤━━━━━━━━━━━━━━━━◥◣
-   𝗚𝗢𝗔𝗧 𝗕𝗢𝗧 𝗩𝟮 𝗢𝗡𝗟𝗜𝗡𝗘
+       𝗚𝗢𝗔𝗧 𝗕𝗢𝗧 𝗩𝟮 𝗢𝗡𝗟𝗜𝗡𝗘
 ◥◣━━━━━━━━━━━━━━━━◢◤
 
       『 𝗦𝗬𝗦𝗧𝗘𝗠 𝗔𝗡𝗔𝗟𝗬𝗧𝗜𝗖𝗦 』
@@ -65,7 +65,7 @@ module.exports = {
 
 ⚡ 𝗥𝗲𝘀𝗼𝘂𝗿𝗰𝗲𝘀:
   » 💾 𝗥𝗔𝗠: ${usedRam}𝗠𝗕 / ${totalRam}𝗚𝗕
-  » 🔋 𝗟𝗼𝗮𝗱: [▓▓▓▓▓▓▓░░░]
+  » 🔋 𝗟𝗼𝗮𝗱: [▓▓▓▓▓▓▓▓░]
   » ⚙️ 𝗡𝗼𝗱𝗲: ${process.version}
 
 🕒 𝗧𝗶𝗺𝗲𝗹𝗶𝗻𝗲:
@@ -73,7 +73,7 @@ module.exports = {
   » ⏰ 𝗧𝗶𝗺𝗲: ${timeNow}
 
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-   👤 𝗢𝘄𝗻𝗲𝗿: 𝗫𝗮𝗹𝗺𝗮𝗻 
+   👤 𝗢𝘄𝗻𝗲𝗿: 𝗧𝗮𝗺𝗶𝗺 𝗕𝗯𝘇
    🛡️ 𝗦𝘁𝗮𝘁𝘂𝘀: 𝗦𝗲𝗰𝘂𝗿𝗲𝗱 & 𝗢𝗻𝗹𝗶𝗻𝗲
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬`.trim();
 
