@@ -27,7 +27,7 @@
     "whiteListIds": [],
     "notes": "if you enable this feature, only the ids in the whiteListIds section can use the bot"
   },
-  "nickNameBot": "𝗧𝗼𝘅𝗶𝗰 𝗖𝗵𝗮𝘁 𝗕𝗼𝘁",
+  "nickNameBot": "𝚈𝙾𝚄𝚁 𝙲𝚁𝙰𝚂𝙷",
   "prefix": "/",
   "database": {
     "type": "sqlite",
