@@ -1,114 +1,91 @@
-const axios = require('axios');
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
+
+const supportedDomains = [
+  "facebook.com", "fb.watch",
+  "youtube.com", "youtu.be",
+  "tiktok.com",
+  "instagram.com", "instagr.am",
+  "likee.com", "likee.video",
+  "capcut.com",
+  "spotify.com",
+  "terabox.com",
+  "twitter.com", "x.com",
+  "drive.google.com",
+  "soundcloud.com",
+  "ndown.app",
+  "pinterest.com", "pin.it"
+];
 
 module.exports = {
   config: {
-    name: "alldl",
-    version: "10.0",
-    author: "𝗧𝗮𝗺𝗶𝗺 𝗕𝗯𝘇",
-    countDown: 3,
+    name: "autodl",
+    version: "2.0",
+    author: "bbz",
     role: 0,
-    shortDescription: "Ultra Fast Multi-Source Downloader",
-    longDescription: "Download videos with automatic retry and stream fix.",
-    category: "media",
-    guide: "{pn} <link> or just send the link"
+    shortDescription: "All-in-one video/media downloader",
+    longDescription:
+      "Automatically downloads videos or media from Facebook, YouTube, TikTok, Instagram, Likee, CapCut, Spotify, Terabox, Twitter, Google Drive, SoundCloud, NDown, Pinterest, and more.",
+    category: "utility",
+    guide: { en: "Just send any supported media link (https://) to auto-download." }
   },
 
-  onStart: async function ({ api, event, args, message }) {
-    const url = args[0];
-    if (!url) return message.reply("⚠️ দয়া করে একটি ভিডিও লিঙ্ক দিন!");
-    return await this.handleDownload(url, api, event, message);
+  onStart: async function({ api, event }) {
+    api.sendMessage(
+      "📥 Send a video/media link (https://) from any supported site (YouTube, Facebook, TikTok, Instagram, Likee, CapCut, Spotify, Terabox, Twitter, Google Drive, SoundCloud, NDown, Pinterest, etc.) to auto-download.",
+      event.threadID,
+      event.messageID
+    );
   },
 
-  onChat: async function ({ api, event, message }) {
-    const { body, senderID } = event;
-    if (!body || senderID === api.getCurrentUserID()) return;
+  onChat: async function({ api, event }) {
+    const content = event.body ? event.body.trim() : "";
+    if (content.toLowerCase().startsWith("auto")) return;
+    if (!content.startsWith("https://")) return;
+    if (!supportedDomains.some(domain => content.includes(domain))) return;
 
-    const linkRegEx = /(https?:\/\/[^\s]+)/g;
-    const match = body.match(linkRegEx);
-
-    if (match) {
-      const url = match[0];
-      const sites = ["tiktok.com", "facebook.com", "fb.watch", "instagram.com", "reels", "youtube.com", "youtu.be", "pinterest.com", "pin.it", "twitter.com", "x.com", "capcut.com"];
-      
-      if (sites.some(s => url.includes(s))) {
-        return await this.handleDownload(url, api, event, message);
-      }
-    }
-  },
-
-  handleDownload: async function (url, api, event, message) {
-    const { messageID } = event;
-    const start = Date.now();
+    api.setMessageReaction("🔃", event.messageID, () => {}, true);
 
     try {
-      if (api.setMessageReaction) api.setMessageReaction("⌛", messageID, () => {}, true);
+      const GITHUB_RAW = "https://raw.githubusercontent.com/Saim-x69x/sakura/main/ApiUrl.json";
+      const rawRes = await axios.get(GITHUB_RAW);
+      const apiBase = rawRes.data.apiv1;
 
-      let videoUrl, title, source = "Unknown";
+      const API = `${apiBase}/api/auto?url=${encodeURIComponent(content)}`;
+      const res = await axios.get(API);
 
+      if (!res.data) throw new Error("No response from API");
 
-      if (url.includes("tiktok.com")) {
-        try {
-          const tikRes = await axios.get(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(url)}`);
-          videoUrl = tikRes.data.video.noWatermark || tikRes.data.video.watermark;
-          title = tikRes.data.title;
-          source = "TikTok";
-        } catch (e) {}
-      }
+      const mediaURL = res.data.high_quality || res.data.low_quality;
+      const mediaTitle = res.data.title || "Unknown Title";
+      if (!mediaURL) throw new Error("Media not found");
 
-      if (!videoUrl && url.includes("tiktok.com")) {
-        try {
-          const res = await axios.get(`https://tikwm.com/api/?url=${encodeURIComponent(url)}`);
-          videoUrl = res.data.data.play;
-          title = res.data.data.title;
-          source = "TikTok";
-        } catch (e) {}
-      }
+      const extension = mediaURL.includes(".mp3") ? "mp3" : "mp4";
+      const buffer = (await axios.get(mediaURL, { responseType: "arraybuffer" })).data;
+      const cacheDir = path.join(__dirname, "cache");
+      await fs.ensureDir(cacheDir);
+      const filePath = path.join(cacheDir, `auto_media_${Date.now()}.${extension}`);
+      fs.writeFileSync(filePath, Buffer.from(buffer));
 
-
-      if (!videoUrl) {
-        try {
-          const configRes = await axios.get("https://raw.githubusercontent.com/goatbotnx/Sexy-nx2.0Updated/refs/heads/main/nx-apis.json");
-          const apiUrl = configRes.data.autodl;
-          const res = await axios.get(`${apiUrl}/download?url=${encodeURIComponent(url)}`);
-          if (res.data && res.data.success) {
-            videoUrl = res.data.data.video_url || res.data.data.nowatermark || res.data.data.hd;
-            title = res.data.data.title;
-            source = res.data.data.source || "Social Media";
-          }
-        } catch (e) {}
-      }
-
-      if (!videoUrl) throw new Error("Could not fetch video from any API.");
+      api.setMessageReaction("✅", event.messageID, () => {}, true);
       
-      const stream = await axios.get(videoUrl, { 
-        responseType: 'stream',
-        headers: { 
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-          'Accept': '*/*'
-        },
-        timeout: 60000 
-      });
+      const domain = supportedDomains.find(d => content.includes(d)) || "Unknown Platform";
+      const platformName = domain.replace(/(\.com|\.app|\.video|\.net)/, "").toUpperCase();
 
-      const time = ((Date.now() - start) / 1000).toFixed(2);
-      const xalmanBody = 
-        `『 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥 』\n` +
-        `━━━━━━━━━━━━━━━━━━\n` +
-        `📝 𝗧𝗶𝘁𝗹𝗲: ${title || "𝗡𝗼 𝗧𝗶𝘁𝗲𝗹"}\n` +
-        `🌐 𝗣𝗹𝗮𝘁𝗳𝗼𝗿𝗺: ${source.toUpperCase()}\n` +
-        `⏱️ 𝗧𝗶𝗺𝗲: ${time}s\n` +
-        `👨‍💻 Dev: xalman` +
-        `━━━━━━━━━━━━━━━━━━`;
+      const infoCard = 
+`
+নে ফকিন্নি তর ভিডিও 😒
+𝙼𝚊𝚍𝚎 𝚆𝚒𝚝𝚑 ❤️ 𝙱𝚢​ 𝚃𝚊𝚖𝚒𝚖 𝙱𝚋𝚣.`;
 
-      await message.reply({
-        body: xalmanBody,
-        attachment: stream.data
-      });
-
-      if (api.setMessageReaction) api.setMessageReaction("☑️", messageID, () => {}, true);
-
-    } catch (e) {
-      console.error("Download Error:", e.message);
-      if (api.setMessageReaction) api.setMessageReaction("❗", messageID, () => {}, true);
+      api.sendMessage(
+        { body: infoCard, attachment: fs.createReadStream(filePath) },
+        event.threadID,
+        () => fs.unlinkSync(filePath),
+        event.messageID
+      );
+    } catch {
+      api.setMessageReaction("❗", event.messageID, () => {}, true);
     }
   }
 };
